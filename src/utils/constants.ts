@@ -48,6 +48,7 @@ export enum ResponseCode {
     LOGIN_FAILED = 4001,
     TOKEN_REFRESH_FAILED = 4002,
     LOGOUT_FAILED = 4003,
+    UNAUTHORIZED = 4004,
 
     // user
     USER_NOT_FOUND = 4101,
@@ -55,6 +56,7 @@ export enum ResponseCode {
     USER_CREATION_FAILED = 4103,
     USER_UPDATE_FAILED = 4104,
     USER_DELETION_FAILED = 4105,
+    GET_ALL_USERS_FAILED = 4106,
 
     // restaurant
     RESTAURANT_NOT_FOUND = 4201,
@@ -93,17 +95,18 @@ export enum ResponseCode {
 export const ErrorMessages = {
     [ResponseCode.SUCCESS]: 'Success',
 
-    // login
+    // auth
     [ResponseCode.LOGIN_FAILED]: 'Login failed',
     [ResponseCode.TOKEN_REFRESH_FAILED]: 'Token refresh failed',
     [ResponseCode.LOGOUT_FAILED]: 'Logout failed',
-
+    [ResponseCode.UNAUTHORIZED]: 'Unauthorized',
     // user
     [ResponseCode.USER_NOT_FOUND]: 'User not found',
     [ResponseCode.USER_ALREADY_EXISTS]: 'User already exists',
     [ResponseCode.USER_CREATION_FAILED]: 'User creation failed',
     [ResponseCode.USER_UPDATE_FAILED]: 'User update failed',
     [ResponseCode.USER_DELETION_FAILED]: 'User deletion failed',
+    [ResponseCode.GET_ALL_USERS_FAILED]: 'Get all users failed',
 
     // restaurant
     [ResponseCode.RESTAURANT_NOT_FOUND]: 'Restaurant not found',    

@@ -1,48 +1,71 @@
 import { Request, Response } from 'express';
+import { Session } from 'express-session';
 import { authService } from '../services/authService';
 import { SuccessHandler, ErrorHandler } from '../utils/response';
 import { ResponseCode } from '../utils/constants';
 import logger from '../utils/logger';
+import { config } from '../configs/index';
+
+interface RequestWithSession extends Request {
+  session: Session & {
+    user?: {
+      email: string;
+      name: string;
+      isAdmin?: boolean;
+    }
+  }
+}
 
 class AuthController {
-  async login(req: Request, res: Response): Promise<any> {
+  async redirectToGoogle(req: Request, res: Response): Promise<void> {
     try {
-      const { code } = req.body;
-      const { user, token } = await authService.login(code);
-
-      logger.info(`Login success: ${user._id}`);
-      return SuccessHandler(res, { user, token });
+      const url = authService.getGoogleAuthURL();
+      res.redirect(url);
+      logger.info(`Redirected to Google: ${url}`);
     } catch (error: any) {
-      logger.error(`Login failed: ${JSON.stringify({ error: error.message })}`);
-      return ErrorHandler(res, ResponseCode.LOGIN_FAILED, error.message);
+      logger.error(`Failed to redirect to Google: ${error.message}`);
+      ErrorHandler(res, ResponseCode.LOGIN_FAILED, error.message);
     }
-  };
+  }
 
-  async refreshToken(req: Request, res: Response): Promise<any> {
+  async handleGoogleCallback(req: RequestWithSession, res: Response): Promise<void> {
     try {
-      const { code } = req.body;
-      const { token } = await authService.refreshToken(code);
+      const code = req.query.code as string;
+      if (!code) {
+        throw new Error('Authorization code not provided');
+      }
 
-      logger.info(`Refresh token success: ${token}`);
-      return SuccessHandler(res, { token });
+      const { user } = await authService.login(code);
       
+      // store user info to session
+      req.session.user = {
+        email: user.email,
+        name: user.name
+      };
+      
+      // redirect to frontend success page
+      res.redirect(`${config.url}/api/v1/resturants`);
     } catch (error: any) {
-      logger.error(`Refresh token failed: ${JSON.stringify({ error: error.message })}`);
-      return ErrorHandler(res, ResponseCode.TOKEN_REFRESH_FAILED, error.message);
+      logger.error(`Google callback failed: ${error.message}`);
+      res.redirect(`${config.url}/api/v1/auth/error?message=${error.message}`);
     }
   }
 
-  async logout(req: Request, res: Response): Promise<any> {
+  async logout(req: RequestWithSession, res: Response): Promise<void> {
     try {
-      const result = await authService.logout(req.body.email);
-
-      logger.info(`Logout success: ${req.body.email}`);
-      return SuccessHandler(res, { result });
+      // destroy session
+      req.session.destroy((err) => {
+        if (err) {
+          logger.error(`Failed to destroy session: ${err}`);
+          ErrorHandler(res, ResponseCode.LOGOUT_FAILED, 'Failed to destroy session');
+        }
+        SuccessHandler(res, { message: 'Logged out successfully' });
+      });
     } catch (error: any) {
-      logger.error(`Logout failed: ${JSON.stringify({ error: error.message })}`);
-      return ErrorHandler(res, ResponseCode.LOGOUT_FAILED, error.message);
+      logger.error(`Logout failed: ${error.message}`);
+      ErrorHandler(res, ResponseCode.LOGOUT_FAILED, error.message);
     }
   }
-} 
+}
 
 export const authController = new AuthController();

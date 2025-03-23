@@ -4,8 +4,8 @@ import { authMiddleware } from '../middlewares/authMW';
 
 const router = Router();
 
-router.post('/login', authController.login);
-router.post('/refresh-token', authController.refreshToken);
-router.delete('/logout', authController.logout);
+router.get('/login', authController.redirectToGoogle);
+router.get('/callback', authController.handleGoogleCallback);
+router.delete('/logout', authMiddleware, authController.logout);
 
 export default router; 

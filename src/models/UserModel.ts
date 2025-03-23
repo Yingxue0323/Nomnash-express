@@ -2,53 +2,41 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { Role, ROLES } from '../utils/constants';
 
 export interface IUser extends Document {
-  username: string;
-  pswd: string;
+  name: string;
   email: string;
-  avatarUrl?: string;
+  googleId: string;
+  avatar?: string;
   role: Role;
-  
-
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const UserSchema = new Schema({
-  username: { 
-    type: String
-  },
-  pswd: {
-    type: String
+  name: { 
+    type: String,
+    required: true
   },
   email: {
     type: String,
-    index: true,
+    required: true,
+    unique: true,
+    index: true
+  },
+  googleId: {
+    type: String,
+    required: true,
     unique: true
   },
-  avatarUrl: { 
+  avatar: { 
     type: String,
     default: '/public/default_avatar.png'
   },
-  role:{
+  role: {
     type: String,
     enum: Object.values(ROLES),
     default: ROLES.USER,
     required: true
-  },
-
-  // VIP Status
-  isVIP: {
-    type: Boolean,
-    default: false
-  },
-  vipExpireAt: {
-    type: Date,
-    default: null
-  },
-  redeem: {
-    type: String,
-    default: null
   },
   lastLoginAt: {
     type: Date,

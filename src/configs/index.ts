@@ -5,6 +5,7 @@ dotenv.config();
 export const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
+  url: process.env.URL || 'http://localhost:3000',
 //   adminSecretKey: process.env.ADMIN_SECRET_KEY!,
 //   aws: {
 //     accessKey: process.env.AWS_ACCESS_KEY!,
