@@ -20,8 +20,10 @@ const port = process.env.PORT || 3000;
 // middleware
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
+  origin: 'http://localhost:4300', // 前端确切地址
+  credentials: true, // 关键：允许携带凭证（cookies）
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(helmet());
 app.use(morgan('dev'));
@@ -41,7 +43,7 @@ app.use(session({
 // app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // connect to database
-// connectDB();
+connectDB();
 
 // register routes
 registerRoutes(app);

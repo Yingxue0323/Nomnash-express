@@ -26,6 +26,7 @@ class UserService {
     return user;
   }
 
+  // -------------------------------------admin curd-------------------------------------
   /**
    * Get all users by admin
    * @returns 
@@ -33,6 +34,30 @@ class UserService {
   async getAllUsers(): Promise<any> {
     const users = await User.find({}, '-password');
     return users;
+  }
+
+  /**
+   * Get user by id
+   * @param id 
+   * @returns 
+   */
+  async getUserById(id: string): Promise<any> {
+    const user = await User.findById(id);
+    return user;
+  }
+  
+  async createUser(user: IUser): Promise<any> {
+    const newUser = await User.create(user);
+    return newUser;
+  }
+
+  async updateUser(id: string, user: IUser): Promise<any> {
+    const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+    return updatedUser;
+  }
+
+  async deleteUser(id: string): Promise<any> {
+    await User.findByIdAndDelete(id);
   }
 }
 

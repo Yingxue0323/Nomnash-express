@@ -48,7 +48,7 @@ class UserController {
     }
   }
 
-  // admin get all users
+  // -------------------------------------admin curd-------------------------------------
   async getAllUsers(req: RequestWithSession, res: Response): Promise<void> {
     try {
       const users = await userService.getAllUsers();
@@ -58,6 +58,45 @@ class UserController {
       ErrorHandler(res, ResponseCode.GET_ALL_USERS_FAILED, error.message);
     }
   }
-}
 
+  async getUserById(req: RequestWithSession, res: Response): Promise<void> {
+    try {
+      const user = await userService.getUserById(req.params.id);
+      SuccessHandler(res, user);
+    } catch (error: any) {
+      logger.error(`Failed to get user by id: ${error.message}`);
+      ErrorHandler(res, ResponseCode.USER_NOT_FOUND, error.message);
+    }
+  }
+
+  async createUser(req: RequestWithSession, res: Response): Promise<void> {
+    try {
+      const user = await userService.createUser(req.body);
+      SuccessHandler(res, user);
+    } catch (error: any) {
+      logger.error(`Failed to create user: ${error.message}`);
+      ErrorHandler(res, ResponseCode.USER_CREATION_FAILED, error.message);
+    }
+  } 
+
+  async updateUser(req: RequestWithSession, res: Response): Promise<void> {
+    try {
+      const user = await userService.updateUser(req.params.id, req.body);
+      SuccessHandler(res, user);
+    } catch (error: any) {
+      logger.error(`Failed to update user: ${error.message}`);
+      ErrorHandler(res, ResponseCode.USER_UPDATE_FAILED, error.message);
+    }
+  } 
+
+  async deleteUser(req: RequestWithSession, res: Response): Promise<void> {
+    try {
+      await userService.deleteUser(req.params.id);
+      SuccessHandler(res, 'User deleted successfully');
+    } catch (error: any) {
+      logger.error(`Failed to delete user: ${error.message}`);
+      ErrorHandler(res, ResponseCode.USER_DELETION_FAILED, error.message);
+    }
+  }
+}
 export const userController = new UserController();

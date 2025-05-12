@@ -11,6 +11,7 @@ interface RequestWithSession extends Request {
     user?: {
       email: string;
       name: string;
+      avatar: string;
       isAdmin?: boolean;
     }
   }
@@ -40,11 +41,12 @@ class AuthController {
       // store user info to session
       req.session.user = {
         email: user.email,
-        name: user.name
+        name: user.name,
+        avatar: user.avatar
       };
       
       // redirect to frontend success page
-      res.redirect(`${config.url}/api/v1/resturants`);
+      res.redirect(`http://localhost:4200/home`);
     } catch (error: any) {
       logger.error(`Google callback failed: ${error.message}`);
       res.redirect(`${config.url}/api/v1/auth/error?message=${error.message}`);

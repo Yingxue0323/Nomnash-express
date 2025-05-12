@@ -3,3 +3,4 @@ node_modules/
 logs/
 package-lock.json
 google-oauth.postman_collection.json
+.DS_Store

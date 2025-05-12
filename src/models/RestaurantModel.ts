@@ -31,7 +31,8 @@ export interface IRestaurant extends Document {
 
   address: string;
   priceRange: number[];
-  phone: string;
+  phone?: string;
+  websiteUrl?: string;
   imagesUrl: string[];
   rating: number;
 
@@ -73,7 +74,11 @@ const RestaurantSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
+    required: false,
+  },
+  websiteUrl: {
+    type: String,
+    required: false,
   },
   imagesUrl: {
     type: [String],

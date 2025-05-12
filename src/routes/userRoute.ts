@@ -4,10 +4,14 @@ import { authMiddleware, adminMiddleware } from '../middlewares/authMW';
 
 const router = Router();
 
+// user & business owner
 router.get('/profile', authMiddleware, userController.getUserProfile);
 router.patch('/profile', authMiddleware, userController.updateUserProfile);
 
-// admin get all users
+// admin curd
 router.get('/', adminMiddleware, userController.getAllUsers);
+router.get('/:id', adminMiddleware, userController.getUserById);
+router.patch('/:id', adminMiddleware, userController.updateUser);
+router.delete('/:id', adminMiddleware, userController.deleteUser);
 
 export default router; 
